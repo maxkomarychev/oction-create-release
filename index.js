@@ -1,11 +1,11 @@
 const core = require("@actions/core");
 const { request } = require("@octokit/request");
-const github = require("@actions/github")
+const github = require("@actions/github");
 
 function parse_array(input_name) {
-  const input_value = core.getInput(input_name)
+  const input_value = core.getInput(input_name);
   if (input_value === "") {
-    return undefined; 
+    return undefined;
   }
   if (input_value === "<<EMPTY>>") {
     return [];
@@ -14,20 +14,20 @@ function parse_array(input_name) {
 }
 
 function parse_boolean(input_name) {
-  const input_value = core.getInput(input_name)
-  return input_value === "true"
+  const input_value = core.getInput(input_name);
+  return input_value === "true";
 }
 
 function default_parse(input_name) {
-  const input_value = core.getInput(input_name)
+  const input_value = core.getInput(input_name);
   if (!input_value) {
-    if (input_name === 'owner') {
-      return github.context.repo.owner
-    } else if (input_name === 'repo') {
-      return github.context.repo.repo
+    if (input_name === "owner") {
+      return github.context.repo.owner;
+    } else if (input_name === "repo") {
+      return github.context.repo.repo;
     }
   }
-  return input_value || undefined
+  return input_value || undefined;
 }
 
 const token = default_parse("token");
@@ -40,34 +40,48 @@ const body = default_parse("body");
 const draft = parse_boolean("draft");
 const prerelease = parse_boolean("prerelease");
 
-
 const requestWithAuth = request.defaults({
   headers: {
-    authorization: `Bearer ${token}`
+    authorization: `Bearer ${token}`,
   },
 });
 
 requestWithAuth("post /repos/{owner}/{repo}/releases", {
-    token,
-    owner,
-    repo,
-    tag_name,
-    target_commitish,
-    name,
-    body,
-    draft,
-    prerelease,
+  token,
+  owner,
+  repo,
+  tag_name,
+  target_commitish,
+  name,
+  body,
+  draft,
+  prerelease,
 })
-  .then(result => {
+  .then((result) => {
     console.log("result", result);
-    if (result && result.data && result.data.id) {
-      core.setOutput('id', result.data.id)
-    }
-    if (result && result.data && result.data.number) {
-      core.setOutput('number', result.data.number)
+
+    if (result && result.data) {
+      if (result.data.id) {
+        core.setOutput("id", result.data.id);
+      }
+      if (result.data.number) {
+        core.setOutput("number", result.data.number);
+      }
+      if (result.data.url) {
+        core.setOutput("url", result.data.url);
+      }
+      if (result.data.html_url) {
+        core.setOutput("html_url", result.data.html_url);
+      }
+      if (result.data.assets_url) {
+        core.setOutput("assets_url", result.data.assets_url);
+      }
+      if (result.data.upload_url) {
+        core.setOutput("upload_url", result.data.upload_url);
+      }
     }
   })
-  .catch(error => {
+  .catch((error) => {
     console.log("error", error);
     core.setFailed(error.message);
   });

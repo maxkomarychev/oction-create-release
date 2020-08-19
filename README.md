@@ -21,6 +21,10 @@ This action implements `POST` request to `/repos/{owner}/{repo}/releases`
   run: |
     echo ${{ steps.my_step_id.outputs.id }}
     echo ${{ steps.my_step_id.outputs.number }}
+    echo ${{ steps.my_step_id.outputs.url }}
+    echo ${{ steps.my_step_id.outputs.html_url }}
+    echo ${{ steps.my_step_id.outputs.assets_url }}
+    echo ${{ steps.my_step_id.outputs.upload_url }}
 ```
 
 
@@ -44,6 +48,10 @@ This action implements `POST` request to `/repos/{owner}/{repo}/releases`
 |---|---|
 |id|`id` field of the response (if exists)|
 |number|`number` field of the response (if exists)|
+|url|`url` field of the response (if exists)|
+|html_url|`html_url` field of the response (if exists)|
+|assets_url|`assets_url` field of the response (if exists)|
+|upload_url|`upload_url` field of the response (if exists)|
 
 # Friendly octions
 
